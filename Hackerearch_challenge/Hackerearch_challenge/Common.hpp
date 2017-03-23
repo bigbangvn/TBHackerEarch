@@ -14,7 +14,7 @@
 #include <vector>
 using namespace std;
 
-#define SHOW_DEBUG 1
+#define SHOW_DEBUG 0
 #if !SHOW_DEBUG
 #define printf(...)
 #endif
@@ -79,7 +79,8 @@ typedef struct Move {
     Position fromPos;
     Position toPos;
     Position overPos;
-    Move(bool _validMove, int _eat, bool _changeDirection, Position _fromPos, Position _toPos, Position _overPos)
+    int pieceType;
+    Move(bool _validMove, int _eat, bool _changeDirection, Position _fromPos, Position _toPos, Position _overPos, int _pieceType)
     {
         validMove = _validMove;
         eat = _eat;
@@ -87,6 +88,13 @@ typedef struct Move {
         fromPos = _fromPos;
         toPos = _toPos;
         overPos = _overPos;
+        pieceType = _pieceType;
+#if DEBUG
+        if(pieceType == 2 && _toPos.row == 0 && _toPos.col == 0)
+        {
+            assert(0);
+        }
+#endif
     }
     //return 1 if this is better than otherMove
     bool worseThan(Move& otherMove)
@@ -102,6 +110,17 @@ typedef struct Move {
     }
 } Move;
 
+typedef struct EvaluationVal
+{
+    int minimaxScore;
+    Move move;
+    EvaluationVal(int score, Move& mv):
+    minimaxScore(score),
+    move(mv)
+    {
+    }
+} EvaluationVal;
+
 //Game state
 extern Cell* _map;
 extern const int _mapSizeInByte;
@@ -116,10 +135,12 @@ void freeMap(Cell* map);
 void getInput();
 int getOpponentId(int playerId);
 void fillNextMap(Cell* currentMap, Move* move, Cell* nextMap);
-vector<Move> findAllMove(Cell* map, int moverId);
+void findAllMove(Cell* map, int moverId, vector<Move>& moves);
 int countNumPiece(Cell* map, int playerId);
 int findMaxEat(vector<Move> moves);
 void logMoves(vector<Move>& moves);
 void showMap(Cell* map);
+bool isValidPosition(int row, int col);
+bool isValidPosition2(Position& pos);
 
 #endif /* Common_hpp */

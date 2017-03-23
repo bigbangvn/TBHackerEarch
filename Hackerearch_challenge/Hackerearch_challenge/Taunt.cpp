@@ -38,7 +38,7 @@ Move solveTaunt(Cell* map, int searchDepth)
     vector<Move> availableMove;
     
     //Find all move (and evaluate, but not neccessary)
-    availableMove = findAllMove(map, _playerId);
+    findAllMove(map, _playerId, availableMove);
     if(availableMove.size() == 0)
     {
         return getInvalidMove();
@@ -60,7 +60,8 @@ Move solveTaunt(Cell* map, int searchDepth)
             
             //Try all enemy move available
             swap(_playerId, _enemyId);
-            vector<Move> enemyMoves = findAllMove(nextMap, _playerId);
+            vector<Move> enemyMoves;
+            findAllMove(nextMap, _playerId, enemyMoves);
             
             
             swap(_playerId, _enemyId);

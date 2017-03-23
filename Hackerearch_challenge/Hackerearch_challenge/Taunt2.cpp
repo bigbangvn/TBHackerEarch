@@ -32,12 +32,14 @@ int evaluateMap(Cell* map, int playerId)
     //Num piece that Enemy can eat
     int score3 = 0;
     
-    vector<Move> playerMoves = findAllMove(map, playerId);
+    vector<Move> playerMoves;
+    findAllMove(map, playerId, playerMoves);
     if(playerMoves.size() == 0)
     {
         return INT_MIN;
     }
-    vector<Move> enemyMoves = findAllMove(map, opponentId);
+    vector<Move> enemyMoves;
+    findAllMove(map, opponentId, enemyMoves);
     if(enemyMoves.size() == 0)
     {
         return INT_MAX;
@@ -49,6 +51,8 @@ int evaluateMap(Cell* map, int playerId)
     return score1*10 + score2*10 + score3*5;
 }
 
+static Move _bestMove = getInvalidMove();
+
 int minimax(Cell* map, int depth, int maximizingPlayer, int playerId)
 {
     if(depth <= 0)
@@ -59,14 +63,27 @@ int minimax(Cell* map, int depth, int maximizingPlayer, int playerId)
     int bestValue;
     int value;
     Move* bestMove = NULL;
+    vector<Move> moves;
     if(maximizingPlayer)
     {
         bestValue = INT_MIN;
-        vector<Move> moves = findAllMove(map, playerId);
+        findAllMove(map, playerId, moves);
+        printf("Num move = %ld\n", moves.size()); fflush(stdout);
+        if(moves.size() == 0) //player don't have any move
+        {
+            printf("Found way to lose\n");
+            return INT_MIN;
+        }
         Cell* nextMap = allocMap();
         for(int i = 0; i<moves.size(); ++i)
         {
             Move* mv = &moves[i];
+#if DEBUG
+            if(mv->pieceType == 2 && mv->toPos.row == 0 && mv->toPos.col == 0)
+            {
+                assert(0);
+            }
+#endif
             fillNextMap(map, mv, nextMap);
             value = minimax(nextMap, depth - 1, false, playerId);
             if(bestValue <= value)
@@ -79,11 +96,25 @@ int minimax(Cell* map, int depth, int maximizingPlayer, int playerId)
     } else //minimizing player
     {
         bestValue = INT_MAX;
-        vector<Move> opponentMoves = findAllMove(map, getOpponentId(playerId));
-        Cell* nextMap = allocMap();
-        for(int i = 0; i<opponentMoves.size(); ++i)
+        findAllMove(map, getOpponentId(playerId), moves);
+        printf("Num movex = %ld\n", moves.size()); fflush(stdout);
+        if(moves.size() == 0) //Opponent don't have any move
         {
-            Move* mv = &opponentMoves[i];
+            printf("Found move to win\n");
+            return INT_MAX;
+        }
+        Cell* nextMap = allocMap();
+        for(int i = 0; i<moves.size(); ++i)
+        {
+            Move* mv = &moves[i];
+#if DEBUG
+            if(mv->pieceType == 2 && mv->toPos.row == 0 && mv->toPos.col == 0)
+            {
+                printf("Num move = %ld\n", moves.size()); fflush(stdout);
+                logMoves(moves);
+                assert(0);
+            }
+#endif
             fillNextMap(map, mv, nextMap);
             value = minimax(nextMap, depth - 1, true, playerId);
             bestValue = min(bestValue, value);
@@ -93,18 +124,25 @@ int minimax(Cell* map, int depth, int maximizingPlayer, int playerId)
                 bestMove = mv;
             }
         }
+        printf("\n");
         freeMap(nextMap);
     }
-    printf("Best score: %d for move: [%d %d] -> [%d %d]\n", bestValue, bestMove->fromPos.row ,bestMove->fromPos.col, bestMove->toPos.row, bestMove->toPos.col);
+    assert(isValidPosition2(bestMove->fromPos));
+    assert(isValidPosition2(bestMove->toPos));
+    showMap(map);
+    printf("Best score: %d for player: %d, move piece %d [%d %d] -> [%d %d]\n", bestValue, maximizingPlayer, bestMove->pieceType, bestMove->fromPos.row ,bestMove->fromPos.col, bestMove->toPos.row, bestMove->toPos.col);
+    _bestMove = *bestMove;
     return bestValue;
 }
 
 int main(int argc, const char * argv[]) {
-    printf("TAUNT GAME\n");
+    printf("START\n");
     initMap();
     getInput();
     showMap(_map);
-    int valForCurrentState = minimax(_map, 4, true, _playerId);
+    int valForCurrentState = minimax(_map, 3, true, _playerId);
+    cout << _bestMove.fromPos.row <<" " <<_bestMove.fromPos.col <<endl <<_bestMove.toPos.row <<" " <<_bestMove.toPos.col <<endl;
+    _bestMove.showDescription();
     printf("FINISHED: %d\n", valForCurrentState);
     return 0;
 }

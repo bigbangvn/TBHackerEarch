@@ -26,7 +26,7 @@ void initMap()
 
 Move getInvalidMove()
 {
-    return Move(0, 0, 0, {-1,-1}, {-1,-1}, {-1,-1});
+    return Move(0, 0, 0, {-1,-1}, {-1,-1}, {-1,-1}, -1);
 }
 Cell* allocMap()
 {
@@ -73,6 +73,16 @@ void fillNextMap(Cell* currentMap, Move* move, Cell* nextMap)
     assert(move->validMove);
     memcpy(nextMap, currentMap, _mapSizeInByte);
     Cell* fromCell = &nextMap[move->fromPos.row*M + move->fromPos.col];
+#if DEBUG
+    if(fromCell->pieceType == 2)
+    {
+        if(move->toPos.row == 0 && move->toPos.col == 0)
+        {
+            assert(0);
+        }
+        printf("Piece 2 move %d %d -> %d %d change dir: %d\n", move->fromPos.row, move->fromPos.col, move->toPos.row, move->toPos.col, move->changeDirection);
+    }
+#endif
     Cell* toCell = &nextMap[move->toPos.row*M + move->toPos.col];
     if(move->eat)
     {
@@ -84,11 +94,16 @@ void fillNextMap(Cell* currentMap, Move* move, Cell* nextMap)
     {
         toCell->invertDirection();
     }
+    fromCell->clean();
 }
 
 bool isValidPosition(int row, int col)
 {
     return row >= 0 && row < N && col >= 0 && col < M;
+}
+bool isValidPosition2(Position& pos)
+{
+    return pos.row >= 0 && pos.row < N && pos.col >= 0 && pos.col < M;
 }
 
 int getOpponentId(int playerId)
@@ -102,6 +117,7 @@ int getOpponentId(int playerId)
 vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
 {
     vector<Move> moves;
+    
     Cell* cellToMove = &map[i*M + j];
     int moverId = cellToMove->playerId;
     int opponentId = getOpponentId(moverId);
@@ -125,7 +141,7 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
                             if(targetCell->playerId != moverId)
                             {
                                 int eatEnemyPiece = (targetCell->playerId == opponentId);
-                                moves.push_back(Move(1, eatEnemyPiece, 0, {i,j}, {targetRow, targetCol}, {-1,-1}));
+                                moves.push_back(Move(1, eatEnemyPiece, 0, {i,j}, {targetRow, targetCol}, {-1,-1}, cellToMove->pieceType));
                             }
                         }
                     }
@@ -138,6 +154,8 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
             //Check can move to horizontally adjacent
             targetRow = i;
             int rowMoveOver = -1;
+            
+            //Check move horizontally
             for(int k=-1; k<=1; ++k)
             {
                 if(k != 0)
@@ -149,7 +167,7 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
                         if(targetCell->playerId != moverId)
                         {
                             bool eatEnemyPiece = (targetCell->playerId == opponentId);
-                            moves.push_back(Move(1, eatEnemyPiece, 0, {i,j}, {targetRow,targetCol}, {-1,-1}));
+                            moves.push_back(Move(1, eatEnemyPiece, 0, {i,j}, {targetRow,targetCol}, {-1,-1}, cellToMove->pieceType));
                         }
                     }
                 }
@@ -159,10 +177,12 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
             targetCol = j;
             if(cellToMove->direction == DIRECTION_UPWARD)
             {
+                assert(i>=1);
                 targetRow = i - 2;
                 rowMoveOver = i - 1;
             } else if(cellToMove->direction == DIRECTION_DOWNWARD)
             {
+                assert(i<=N-2);
                 targetRow = i + 2;
                 rowMoveOver = i + 1;
             } else
@@ -175,7 +195,8 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
             Cell* moveOverCell = &map[rowMoveOver*M + targetCol];
             if(moveOverCell->playerId == opponentId)
                 ++numEat;
-            
+
+            assert(isValidPosition(rowMoveOver, targetCol));
             if(isValidPosition(targetRow, targetCol))
             {
                 Cell* targetCell = &map[targetRow*M + targetCol];
@@ -183,11 +204,17 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
                 {
                     if(targetCell->playerId == opponentId)
                         ++numEat;
-                    moves.push_back(Move(1, numEat, 0, {i,j}, {targetRow,targetCol}, {rowMoveOver,targetCol}));
+                    bool changeDirection = false;
+                    if(targetRow == 0 || targetRow == N-1)
+                    {
+                        changeDirection = true;
+                    }
+                    moves.push_back(Move(1, numEat, changeDirection, {i,j}, {targetRow,targetCol}, {rowMoveOver,targetCol}, cellToMove->pieceType));
                 }
             } else //move to its own position and change direction
             {
-                moves.push_back(Move(1, numEat, 1, {i,j}, {i,j}, {rowMoveOver, targetCol}));
+                moves.push_back(Move(1, numEat, 1, {i,j}, {i,j}, {rowMoveOver, targetCol}, cellToMove->pieceType));
+                printf("Piece 2 valid move: %d %d -> %d %d\n", i, j, i, j);
             }
         }
             break;
@@ -235,22 +262,27 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
                     ++numEat;
                 
                 //Check reflection
-                if((vi < 0 && currPosi <= 1) ||
-                   (vi > 0 && currPosi >= N-2))
+                if((vi < 0 && currPosi <= 0) ||
+                   (vi > 0 && currPosi >= N-1))
                 {
                     vi = -vi;
                     changeDirection = true;
                 }
-                if(currPosj == 0)
+                if(currPosj == 0) // vj > 0
                 {
                     vj = -vj;
                 }
                 currPosi += vi;
                 currPosj += vj;
+                if((vi < 0 && currPosi == 0) ||
+                   (vi > 0 && currPosi == N-1))
+                {
+                    changeDirection = true;
+                }
                 assert(isValidPosition(currPosi, currPosj));
                 if(currPosi == i && currPosj == j) //move to its own position
                 {
-                    moves.push_back(Move(1, numEat, changeDirection, {i,j}, {i,j}, {moveOveri, moveOverj}));
+                    moves.push_back(Move(1, numEat, changeDirection, {i,j}, {i,j}, {moveOveri, moveOverj}, cellToMove->pieceType));
                 } else
                 {
                     Cell* targetCell = &map[currPosi*M + currPosj];
@@ -258,7 +290,7 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
                     {
                         if(targetCell->playerId == opponentId)
                             ++numEat;
-                        moves.push_back(Move(1, numEat, changeDirection, {i,j}, {currPosi,currPosj}, {moveOveri, moveOverj}));
+                        moves.push_back(Move(1, numEat, changeDirection, {i,j}, {currPosi,currPosj}, {moveOveri, moveOverj}, cellToMove->pieceType));
                     }
                 }
                 assert(currPosi > 0 || (currPosi == 0 && changeDirection));
@@ -281,22 +313,28 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
                     ++numEat;
                 
                 //Check reflection
-                if((vi < 0 && currPosi <= 1) ||
-                   (vi > 0 && currPosi >= N-2))
+                if((vi < 0 && currPosi <= 0) ||
+                   (vi > 0 && currPosi >= N-1))
                 {
                     vi = -vi;
                     changeDirection = true;
                 }
-                if(currPosj == M-1)
+                if(currPosj == M-1) // vj > 0
                 {
                     vj = -vj;
                 }
                 currPosi += vi;
                 currPosj += vj;
+                if((vi < 0 && currPosi == 0) ||
+                   (vi > 0 && currPosi == N-1))
+                {
+                    changeDirection = true;
+                }
+                
                 assert(isValidPosition(currPosi, currPosj));
                 if(currPosi == i && currPosj == j) //move to its own position
                 {
-                    moves.push_back(Move(1, numEat, changeDirection, {i,j}, {i,j}, {moveOveri, moveOverj}));
+                    moves.push_back(Move(1, numEat, changeDirection, {i,j}, {i,j}, {moveOveri, moveOverj}, cellToMove->pieceType));
                 } else
                 {
                     Cell* targetCell = &map[currPosi*M + currPosj];
@@ -304,7 +342,7 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
                     {
                         if(targetCell->playerId == opponentId)
                             ++numEat;
-                        moves.push_back(Move(1, numEat, changeDirection, {i,j}, {currPosi,currPosj}, {moveOveri, moveOverj}));
+                        moves.push_back(Move(1, numEat, changeDirection, {i,j}, {currPosi,currPosj}, {moveOveri, moveOverj}, cellToMove->pieceType));
                     }
                 }
                 assert(currPosi > 0 || (currPosi == 0 && changeDirection));
@@ -317,9 +355,8 @@ vector<Move> findAllMoveOfACell(int i, int j, Cell* map)
     return moves;
 }
 
-vector<Move> findAllMove(Cell* map, int moverId)
+void findAllMove(Cell* map, int moverId, vector<Move>& moves)
 {
-    vector<Move> moves;
     for(int i=0; i<N; ++i)
     {
         for(int j=0; j<M; ++j)
@@ -333,7 +370,23 @@ vector<Move> findAllMove(Cell* map, int moverId)
             }
         }
     }
-    return moves;
+#if DEBUG
+    printf("All move: %ld \n", moves.size());
+    for(int i = 0; i<moves.size(); ++i)
+    {
+        Move* mv = &moves[i];
+        printf("%d %d -> %d %d, ", mv->fromPos.row, mv->fromPos.col, mv->toPos.row, mv->toPos.col);
+        if(mv->validMove)
+        {
+            assert(isValidPosition2(mv->fromPos));
+            assert(isValidPosition2(mv->toPos));
+        }
+        if(mv->overPos.row != -1)
+            assert(isValidPosition2(mv->overPos));
+    }
+    printf("\n");
+#endif
+    return;
 }
 
 int countNumPiece(Cell* map, int playerId)
