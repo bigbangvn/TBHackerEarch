@@ -9,9 +9,19 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>MergedCodeToUpload.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>717C82FF1E84C92A0045F158</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>71D537711E7E1F8D00C113CF</key>
 		<dict>
 			<key>primary</key>

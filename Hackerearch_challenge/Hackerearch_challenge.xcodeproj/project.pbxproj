@@ -9,11 +9,19 @@
 /* Begin PBXBuildFile section */
 		717C82F81E8342520045F158 /* Taunt2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 717C82F61E8342520045F158 /* Taunt2.cpp */; };
 		717C82FB1E8343EC0045F158 /* Common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 717C82F91E8343EC0045F158 /* Common.cpp */; };
-		71D537761E7E1F9000C113CF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71D537751E7E1F9000C113CF /* main.cpp */; };
-		71D5377E1E7E1FA300C113CF /* Taunt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71D5377C1E7E1FA300C113CF /* Taunt.cpp */; };
+		717C83031E84C92A0045F158 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 717C83021E84C92A0045F158 /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		717C82FE1E84C92A0045F158 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		71D537701E7E1F8D00C113CF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -27,16 +35,21 @@
 
 /* Begin PBXFileReference section */
 		717C82F61E8342520045F158 /* Taunt2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Taunt2.cpp; sourceTree = "<group>"; };
-		717C82F71E8342520045F158 /* Taunt2.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Taunt2.hpp; sourceTree = "<group>"; };
 		717C82F91E8343EC0045F158 /* Common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Common.cpp; sourceTree = "<group>"; };
 		717C82FA1E8343EC0045F158 /* Common.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Common.hpp; sourceTree = "<group>"; };
+		717C83001E84C92A0045F158 /* MergedCodeToUpload */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MergedCodeToUpload; sourceTree = BUILT_PRODUCTS_DIR; };
+		717C83021E84C92A0045F158 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		71D537721E7E1F8F00C113CF /* Hackerearch_challenge */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Hackerearch_challenge; sourceTree = BUILT_PRODUCTS_DIR; };
-		71D537751E7E1F9000C113CF /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		71D5377C1E7E1FA300C113CF /* Taunt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Taunt.cpp; sourceTree = "<group>"; };
-		71D5377D1E7E1FA300C113CF /* Taunt.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Taunt.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		717C82FD1E84C92A0045F158 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		71D5376F1E7E1F8D00C113CF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -47,10 +60,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		717C83011E84C92A0045F158 /* MergedCodeToUpload */ = {
+			isa = PBXGroup;
+			children = (
+				717C83021E84C92A0045F158 /* main.cpp */,
+			);
+			path = MergedCodeToUpload;
+			sourceTree = "<group>";
+		};
 		71D537691E7E1F8D00C113CF = {
 			isa = PBXGroup;
 			children = (
 				71D537741E7E1F8F00C113CF /* Hackerearch_challenge */,
+				717C83011E84C92A0045F158 /* MergedCodeToUpload */,
 				71D537731E7E1F8F00C113CF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				71D537721E7E1F8F00C113CF /* Hackerearch_challenge */,
+				717C83001E84C92A0045F158 /* MergedCodeToUpload */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -66,11 +89,7 @@
 		71D537741E7E1F8F00C113CF /* Hackerearch_challenge */ = {
 			isa = PBXGroup;
 			children = (
-				71D537751E7E1F9000C113CF /* main.cpp */,
-				71D5377C1E7E1FA300C113CF /* Taunt.cpp */,
-				71D5377D1E7E1FA300C113CF /* Taunt.hpp */,
 				717C82F61E8342520045F158 /* Taunt2.cpp */,
-				717C82F71E8342520045F158 /* Taunt2.hpp */,
 				717C82F91E8343EC0045F158 /* Common.cpp */,
 				717C82FA1E8343EC0045F158 /* Common.hpp */,
 			);
@@ -80,6 +99,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		717C82FF1E84C92A0045F158 /* MergedCodeToUpload */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 717C83061E84C92A0045F158 /* Build configuration list for PBXNativeTarget "MergedCodeToUpload" */;
+			buildPhases = (
+				717C82FC1E84C92A0045F158 /* Sources */,
+				717C82FD1E84C92A0045F158 /* Frameworks */,
+				717C82FE1E84C92A0045F158 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MergedCodeToUpload;
+			productName = MergedCodeToUpload;
+			productReference = 717C83001E84C92A0045F158 /* MergedCodeToUpload */;
+			productType = "com.apple.product-type.tool";
+		};
 		71D537711E7E1F8D00C113CF /* Hackerearch_challenge */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 71D537791E7E1F9000C113CF /* Build configuration list for PBXNativeTarget "Hackerearch_challenge" */;
@@ -106,6 +142,11 @@
 				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = trongbangvp;
 				TargetAttributes = {
+					717C82FF1E84C92A0045F158 = {
+						CreatedOnToolsVersion = 8.2;
+						DevelopmentTeam = 5HHW6TCSUF;
+						ProvisioningStyle = Automatic;
+					};
 					71D537711E7E1F8D00C113CF = {
 						CreatedOnToolsVersion = 8.2;
 						DevelopmentTeam = 5HHW6TCSUF;
@@ -126,18 +167,25 @@
 			projectRoot = "";
 			targets = (
 				71D537711E7E1F8D00C113CF /* Hackerearch_challenge */,
+				717C82FF1E84C92A0045F158 /* MergedCodeToUpload */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		717C82FC1E84C92A0045F158 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				717C83031E84C92A0045F158 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		71D5376E1E7E1F8D00C113CF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				717C82FB1E8343EC0045F158 /* Common.cpp in Sources */,
-				71D5377E1E7E1FA300C113CF /* Taunt.cpp in Sources */,
-				71D537761E7E1F9000C113CF /* main.cpp in Sources */,
 				717C82F81E8342520045F158 /* Taunt2.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -145,6 +193,22 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		717C83041E84C92A0045F158 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 5HHW6TCSUF;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		717C83051E84C92A0045F158 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 5HHW6TCSUF;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		71D537771E7E1F9000C113CF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -253,6 +317,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		717C83061E84C92A0045F158 /* Build configuration list for PBXNativeTarget "MergedCodeToUpload" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				717C83041E84C92A0045F158 /* Debug */,
+				717C83051E84C92A0045F158 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		71D5376D1E7E1F8D00C113CF /* Build configuration list for PBXProject "Hackerearch_challenge" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

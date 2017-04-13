@@ -12,16 +12,17 @@
 #include <stdio.h>
 #include <assert.h>
 #include <vector>
+#include <string.h>
+#include <limits.h>
 using namespace std;
 
-#define SHOW_DEBUG 0
+#define SHOW_DEBUG 1
 #if !SHOW_DEBUG
 #define printf(...)
 #endif
 
 #define M 4     //cols
 #define N 10    //rows
-#define DEPTH_SEARCH 2
 
 typedef enum StrategyType:int //This affect how we compare the evaluation of map
 {
@@ -70,6 +71,10 @@ typedef struct Cell {
 typedef struct Position {
     int row;
     int col;
+    bool isEqual(Position& p)
+    {
+        return row == p.row && col == p.col;
+    }
 } Position;
 
 typedef struct Move {
@@ -90,10 +95,24 @@ typedef struct Move {
         overPos = _overPos;
         pieceType = _pieceType;
 #if DEBUG
-        if(pieceType == 2 && _toPos.row == 0 && _toPos.col == 0)
+        int maxDistance = 0;
+        if(pieceType == -1)
+        {
+            
+        } else if(pieceType == 1)
+        {
+            maxDistance = 1;
+        } else if(pieceType == 2)
+        {
+            maxDistance = 2;
+        } else if(pieceType == 3)
+        {
+            maxDistance = 4;
+        } else
         {
             assert(0);
         }
+        assert(abs(_fromPos.row - _toPos.row) + abs(_fromPos.col - _toPos.col) <= maxDistance);
 #endif
     }
     //return 1 if this is better than otherMove
@@ -110,16 +129,6 @@ typedef struct Move {
     }
 } Move;
 
-typedef struct EvaluationVal
-{
-    int minimaxScore;
-    Move move;
-    EvaluationVal(int score, Move& mv):
-    minimaxScore(score),
-    move(mv)
-    {
-    }
-} EvaluationVal;
 
 //Game state
 extern Cell* _map;
@@ -135,11 +144,14 @@ void freeMap(Cell* map);
 void getInput();
 int getOpponentId(int playerId);
 void fillNextMap(Cell* currentMap, Move* move, Cell* nextMap);
+vector<Move> findAllMoveOfACell(int i, int j, Cell* map, vector<Move>& moves);
 void findAllMove(Cell* map, int moverId, vector<Move>& moves);
+bool checkCanEat(Cell* map, int moverId, Position&& opponentPos);
 int countNumPiece(Cell* map, int playerId);
 int findMaxEat(vector<Move> moves);
 void logMoves(vector<Move>& moves);
 void showMap(Cell* map);
+void showMapWithIndent(Cell* map, int indent);
 bool isValidPosition(int row, int col);
 bool isValidPosition2(Position& pos);
 
